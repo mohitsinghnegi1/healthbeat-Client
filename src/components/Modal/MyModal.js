@@ -1,12 +1,13 @@
 import React, { Component, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { AddMeal } from '../../services/util';
+import { AddMeal, UpdateMeal } from '../../services/util';
 
 export default function MyModal(props) {
   const [state, setState] = useState({
-    meal: '',
-    description: '',
-    calories: '',
+    meal: props.mealName,
+    description: props.description,
+    calories: props.calorie,
+    _id: props._id,
     error: '',
   });
 
@@ -46,7 +47,23 @@ export default function MyModal(props) {
         calorie: state.calories,
         userId: userId,
       };
-      AddMeal(mealInfo, state, changeState);
+
+      if (props.operation == 'ADD_MEAL') {
+        AddMeal(mealInfo, state, changeState);
+      } else if (props.operation == 'UPDATE_MEAL') {
+        const payload = [
+          { propName: 'mealName', value: `${state.meal}` },
+          { propName: 'description', value: `${state.description}` },
+          { propName: 'calorie', value: `${state.calories}` },
+        ];
+        console.log('payload ', payload);
+        UpdateMeal(payload, state, changeState);
+
+        console.log('update meal');
+        //TODO call update meal api here
+      } else {
+        console.log('Error : invalid operation');
+      }
     }
   };
 
